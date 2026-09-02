@@ -37,7 +37,7 @@ DESTINATIONS = [
         "category": ["Heritage", "Adventure"], "budget": 8000, "days": 3,
         "crowd": "Medium", "season": "Oct–Feb",
         "description": "Historic ruins, cycling routes and dramatic landscapes.",
-        "eco": 84, "emoji": "🪨"
+        "eco": 84, "emoji": "🛕"
     },
     {
         "id": 5, "name": "Kumbalangi", "state": "Kerala",

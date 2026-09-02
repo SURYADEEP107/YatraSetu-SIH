@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Trips | YatraSetu</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="/">Yatra<span>Setu</span></a>
+  <nav><a href="/">Discover</a><a href="/logout">Logout</a></nav>
+</header>
+<main class="dashboard">
+  <div class="eyebrow">PERSONAL DASHBOARD</div>
+  <h1>{{ user.name }}'s journeys</h1>
+  <p class="dashboard-sub">Your saved travel plans are stored locally in the project database.</p>
+  {% if trips %}
+    <div class="saved-grid">
+    {% for t in trips %}
+      <article class="saved">
+        <span>TRIP #{{ t.id }}</span>
+        <h2>{{ t.destination }}</h2>
+        <p>{{ t.days }} days · ₹{{ "{:,.0f}".format(t.budget) }} per person</p>
+        <div class="saved-itinerary">{{ t.itinerary }}</div>
+      </article>
+    {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">No saved journeys yet. Go back and use the Journey Engine.</div>
+  {% endif %}
+</main>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YatraSetu | Responsible Travel Intelligence</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<header class="nav">
+  <a class="mobile-menu" href="#mobileNav" aria-label="Open menu">☰</a>
+  <a class="brand" href="/">Yatra<span>Setu</span></a>
+  <nav id="mobileNav">
+    <a href="#discover">Discover</a>
+    <a href="#planner">Planner</a>
+    <a href="#impact">Impact</a>
+    <a href="#experiences">Experiences</a>
+    {% if user %}
+      <a href="/dashboard">My Trips</a>
+      <a class="nav-user" href="/logout">{{ user.name }} · Logout</a>
+    {% else %}
+      <button class="nav-login" onclick="openModal('loginModal')">Login</button>
+    {% endif %}
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow">STUDENT INNOVATION · TRAVEL & TOURISM</div>
+    <h1>Travel beyond the<br><strong>tourist checklist.</strong></h1>
+    <p>
+      YatraSetu is an original travel-intelligence prototype that helps
+      travellers discover lesser-known Indian destinations, build practical
+      itineraries and understand the local impact of their choices.
+    </p>
+    <div class="hero-actions">
+      <a href="#planner" class="btn primary">Build my journey →</a>
+      <a href="#discover" class="btn ghost">Explore destinations</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="orbit"></div>
+    <div class="india-card">
+      <span class="pin">✦</span>
+      <div>
+        <small>DISCOVERY MODE</small>
+        <h3>Hidden India</h3>
+        <p>Local-first · Low-crowd · Budget-aware</p>
+      </div>
+    </div>
+    <div class="floating-card one"><b>91</b><small>Impact score</small></div>
+    <div class="floating-card two"><b>−32%</b><small>crowd exposure</small></div>
+  </div>
+</section>
+
+<section id="discover" class="section">
+  <div class="section-top">
+    <div>
+      <div class="eyebrow">01 / DISCOVER</div>
+      <h2>Places worth slowing down for.</h2>
+    </div>
+    <p>We deliberately include emerging and culturally rich destinations instead of only mainstream tourist hubs.</p>
+  </div>
+
+  <div class="destination-grid">
+  {% for d in destinations %}
+    <article class="destination">
+      <div class="destination-art">{{ d.emoji }}</div>
+      <div class="destination-body">
+        <div class="destination-meta"><span>{{ d.state }}</span><span class="crowd {{ d.crowd|lower }}">{{ d.crowd }} crowd</span></div>
+        <h3>{{ d.name }}</h3>
+        <p>{{ d.description }}</p>
+        <div class="destination-bottom">
+          <span>From <b>₹{{ "{:,}".format(d.budget) }}</b></span>
+          <span>{{ d.eco }}/100 eco</span>
+        </div>
+      </div>
+    </article>
+  {% endfor %}
+  </div>
+</section>
+
+<section id="planner" class="section planner">
+  <div class="section-top">
+    <div>
+      <div class="eyebrow">02 / JOURNEY ENGINE</div>
+      <h2>Tell us how you travel.</h2>
+    </div>
+    <p>The recommendation engine uses transparent scoring—not a black-box claim of AI.</p>
+  </div>
+
+  <div class="planner-card">
+    <div class="input-block">
+      <label>Budget per person</label>
+      <div class="input-with-prefix"><span>₹</span><input id="pBudget" type="number" value="7000"></div>
+    </div>
+    <div class="input-block">
+      <label>Days available</label>
+      <input id="pDays" type="number" value="3" min="1" max="15">
+    </div>
+    <div class="input-block">
+      <label>Primary interest</label>
+      <select id="pInterest">
+        <option>Nature</option><option>Culture</option><option>Heritage</option><option>Adventure</option>
+      </select>
+    </div>
+    <label class="check"><input id="pCrowd" type="checkbox"> Prefer low-crowd places</label>
+    <button class="btn primary" onclick="findPlaces()">Find my match</button>
+  </div>
+
+  <div id="matches" class="matches"></div>
+</section>
+
+<section id="impact" class="section impact">
+  <div class="impact-main">
+    <div class="eyebrow">03 / RESPONSIBLE TRAVEL INDEX</div>
+    <h2>Tourism should leave value behind—not just footprints.</h2>
+    <p>
+      Each destination receives a simple 0–100 demo score based on local
+      participation, crowd pressure, low-carbon options and cultural sensitivity.
+      It is a prototype metric, not an official government rating.
+    </p>
+  </div>
+  <div class="impact-metrics">
+    <div><b>40%</b><span>local economy</span></div>
+    <div><b>30%</b><span>low-impact mobility</span></div>
+    <div><b>20%</b><span>crowd balance</span></div>
+    <div><b>10%</b><span>culture & nature</span></div>
+  </div>
+</section>
+
+<section id="experiences" class="section">
+  <div class="section-top">
+    <div>
+      <div class="eyebrow">04 / LOCAL EXPERIENCES</div>
+      <h2>Make the local economy part of the trip.</h2>
+    </div>
+  </div>
+  <div class="experience-grid">
+  {% for e in experiences %}
+    <div class="experience">
+      <div class="experience-icon">{{ e.emoji }}</div>
+      <div>
+        <h3>{{ e.name }}</h3>
+        <p>{{ e.place }} · {{ e.impact }}</p>
+      </div>
+      <strong>₹{{ e.price }}</strong>
+    </div>
+  {% endfor %}
+  </div>
+</section>
+
+<section class="section architecture">
+  <div>
+    <div class="eyebrow">05 / HOW IT WORKS</div>
+    <h2>Simple technology.<br>Real-world problem.</h2>
+  </div>
+  <div class="steps">
+    <div><span>01</span><h3>Profile</h3><p>Budget, duration, interests and crowd preference.</p></div>
+    <div><span>02</span><h3>Match</h3><p>Explainable scoring ranks suitable destinations.</p></div>
+    <div><span>03</span><h3>Plan</h3><p>Generate a day-wise starter itinerary.</p></div>
+    <div><span>04</span><h3>Measure</h3><p>Show the estimated responsible-travel impact.</p></div>
+  </div>
+</section>
+
+<footer>
+  <div><strong>YatraSetu</strong><p>Original Student Innovation Prototype · Travel & Tourism</p></div>
+  <div><span>Python Flask</span><span>SQLite</span><span>HTML/CSS</span><span>JavaScript</span></div>
+</footer>
+
+<div id="loginModal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('loginModal')">×</button>
+    <div class="eyebrow">ACCOUNT</div>
+    <h2>Welcome back.</h2>
+    <form method="POST" action="/login">
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" required>
+      <button class="btn primary full">Login</button>
+    </form>
+    <p class="switch">New here? <button onclick="switchModal()">Create account</button></p>
+  </div>
+</div>
+
+<div id="registerModal" class="modal">
+  <div class="modal-box">
+    <button class="close" onclick="closeModal('registerModal')">×</button>
+    <div class="eyebrow">CREATE ACCOUNT</div>
+    <h2>Start your journey.</h2>
+    <form method="POST" action="/register">
+      <input name="name" placeholder="Full name" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <input name="password" type="password" placeholder="Password" minlength="6" required>
+      <button class="btn primary full">Create account</button>
+    </form>
+    <p class="switch">Already registered? <button onclick="switchModal()">Login</button></p>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
